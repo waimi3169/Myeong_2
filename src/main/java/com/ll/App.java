@@ -2,36 +2,37 @@ package com.ll;
 
 import com.ll.system.controller.SystemController;
 import com.ll.wiseSaying.controller.WiseSayingController;
-import com.ll.wiseSaying.entity.WiseSaying;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class App {
-    private final Scanner sc;
-
-    public App(Scanner sc) {
-        this.sc = sc;
-    }
     public void run() {
-        System.out.println("== 명언 앱 ==");
+        System.out.println("== 명언앱 ==");
 
         SystemController systemController = new SystemController();
-        WiseSayingController wiseSayingController = new WiseSayingController(sc);
+        WiseSayingController wiseSayingController = new WiseSayingController();
 
-        while(true) {
+        while (true) {
             System.out.print("명령) ");
-            String command = sc.nextLine().trim();
+            // trim() : 혹시 있을지 모를 좌우공백제거된 버전으로 주세요.
+            String command = Container.getScanner().nextLine().trim();
+            Rq rq = new Rq(command);
 
-            if(command.equals("종료")) {
-                systemController.exit();
-                break;
-            } else if(command.equals("등록")) {
-                wiseSayingController.write();
-            } else if(command.equals("목록")) {
-                wiseSayingController.list();
-
+            switch (rq.getActionCode()) {
+                case "종료":
+                    systemController.exit();
+                    return;
+                case "등록":
+                    wiseSayingController.write();
+                    break;
+                case "목록":
+                    wiseSayingController.list();
+                    break;
+                case "삭제":
+                    wiseSayingController.remove(rq);
+                    break;
             }
         }
     }
